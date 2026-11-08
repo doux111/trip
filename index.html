@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>서안·화산 4박 5일 여행 플래너</title>
+<!-- Pretendard 웹폰트 -->
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root {
+    /* [토스 시그니처 대표 컬러 팔레트] */
+    --bg: #f2f4f6;
+    --card: #ffffff;
+    --primary: #3182f6;          /* 토스 블루 */
+    --primary-soft: #e8f3ff;
+    --primary-dark: #1b64da;
+    
+    --ink: #191f28;              /* 주요 텍스트 */
+    --ink-dim: #4e5968;          /* 보조 텍스트 */
+    --ink-faint: #8b95a1;        /* 옅은 텍스트 */
+    --line: #e5e8eb;
+
+    --blue-bg: #f0f7ff;
+    --red: #f04452;
+    --red-soft: #fff0f1;
+    --green: #20c997;
+    --green-soft: #e6fcf5;
+    --yellow: #ffb300;
+    --yellow-soft: #fff9db;
+    --purple: #8e44ad;
+    --purple-soft: #f3e8f9;
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.03);
+  }
+
+  /* 전역 모바일 뷰포트 최적화 reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    max-width: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    line-height: 1.6;
+    padding-bottom: 60px;
+    letter-spacing: -0.01em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  /* 메인 컨테이너 */
+  .wrap {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 16px 14px 0;
+  }
+
+  /* 스크롤 시 상단 글래스모피즘 DAY 바 */
+  .sticky-day {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+    padding: 11px 14px;
+    font-weight: 700;
+    font-size: 14px;
+    display: none;
+    letter-spacing: -0.01em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 헤더 영역 */
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 24px;
+    line-height: 1.3;
+    margin: 0 0 4px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .sub {
+    font-size: 14px;
+    color: var(--ink-dim);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+
+  /* 항공권 카드 */
+  .flight-card {
+    background: var(--card);
+    color: var(--ink);
+    border-radius: var(--radius-lg);
+    padding: 18px 16px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+
+  .flight-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .flight-row .lbl {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  .flight-row .val {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .flight-row .date {
+    font-size: 12px;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+
+  .flight-mid {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-faint);
+    padding: 0 4px;
+    font-weight: 600;
+    min-width: 60px;
+  }
+
+  .flight-air {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  .price-tag {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-dim);
+  }
+
+  .price-tag b {
+    color: var(--primary);
+    font-size: 15px;
+  }
+
+  /* 일정 바로가기 내비게이션 */
+  .daynav {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 0 12px;
+    margin-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    width: 100%;
+  }
+
+  .daynav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .daynav button {
+    flex: 0 0 auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-dim);
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 9999px;
+    padding: 8px 14px;
+    white-space: nowrap;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .daynav button:active,
+  .daynav button.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 4px 10px rgba(49, 130, 246, 0.3);
+  }
+
+  h2.section-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 28px 0 12px;
+    letter-spacing: -0.02em;
+  }
+
+  /* 정보 그리드 (아이폰 15 프로 2컬럼 최적화) */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .info-card {
+    background: var(--card);
+    border-radius: var(--radius-md);
+    padding: 14px 12px;
+    box-shadow: var(--shadow-sm);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .info-card .label {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .info-card .body {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.45;
+    font-weight: 500;
+  }
+
+  /* 확정 숙소 전용 카드 */
+  .hotel-confirmed-card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 18px 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+
+  .hotel-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .hotel-badge {
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    white-space: nowrap;
+  }
+
+  .hotel-name-ko {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 2px 0 1px;
+    letter-spacing: -0.02em;
+  }
+
+  .hotel-name-cn {
+    font-size: 13px;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+
+  .hotel-location-warning {
+    background: var(--red-soft);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: var(--red);
+    line-height: 1.5;
+    font-weight: 600;
+  }
+
+  .hotel-address-box {
+    background: var(--bg);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+
+  .hotel-address-box b {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .hotel-info-list {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 10px;
+    line-height: 1.55;
+  }
+
+  /* MZ 야간 핫플 & 외매 추천 카드 */
+  .mz-night-card {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 18px 16px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+
+  .mz-night-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mz-spot-item {
+    background: var(--bg);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .mz-spot-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .mz-spot-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mz-spot-tag {
+    font-size: 11px;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+
+  .mz-spot-desc {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+
+  /* 아코디언 일자 카드 */
+  .day {
+    margin-top: 14px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+
+  .day-head {
+    background: var(--card);
+    color: var(--ink);
+    padding: 18px 40px 18px 16px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .day-head:active {
+    background: #fafbfc;
+  }
+
+  .day-num {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 800;
+  }
+
+  .day-date {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .day-title {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 3px 0 4px;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  .day-mood {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  .day-route {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .day-head .chevron {
+    position: absolute;
+    right: 16px;
+    top: 20px;
+    font-size: 16px;
+    color: var(--ink-faint);
+    transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .day.open .day-head .chevron {
+    transform: rotate(180deg);
+    color: var(--ink);
+  }
+
+  .day-body {
+    display: none;
+    padding: 16px;
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    width: 100%;
+  }
+
+  .day.open .day-body {
+    display: block;
+  }
+
+  .note {
+    background: var(--blue-bg);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin: 0 0 16px;
+    line-height: 1.6;
+    width: 100%;
+  }
+
+  .note b {
+    color: var(--primary);
+    display: block;
+    margin-bottom: 3px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* 타임라인 항목 */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .item {
+    background: var(--bg);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .item.highlight-airport {
+    background: #eef6ff;
+    border: 1px solid #d0e4ff;
+  }
+
+  .item.highlight-dutyfree {
+    background: var(--yellow-soft);
+    border: 1px solid #ffe082;
+  }
+
+  .item .time {
+    font-size: 13px;
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+
+  .item .time-free {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .item .title {
+    font-size: 16.5px;
+    font-weight: 800;
+    margin-bottom: 5px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  .item .desc {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+  }
+
+  .item .flight-info {
+    font-size: 12.5px;
+    color: var(--primary);
+    margin-top: 5px;
+    font-weight: 700;
+  }
+
+  /* 고덕지도 바로가기 버튼 */
+  .maplink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    background: var(--primary);
+    border-radius: 9999px;
+    padding: 8px 16px;
+    text-decoration: none;
+    box-shadow: 0 3px 10px rgba(49, 130, 246, 0.25);
+    transition: transform 0.15s ease, background 0.15s;
+    max-width: 100%;
+    width: auto;
+    text-align: center;
+  }
+
+  .maplink:active {
+    transform: scale(0.96);
+    background: var(--primary-dark);
+  }
+
+  /* 팁 토글 버튼 */
+  .tip-toggle {
+    margin-top: 12px;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+  }
+
+  .tip-toggle .arrow {
+    transition: transform 0.2s;
+    font-size: 10px;
+  }
+
+  .tip-toggle.open .arrow {
+    transform: rotate(180deg);
+  }
+
+  .tip-content {
+    display: none;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    box-shadow: var(--shadow-sm);
+    line-height: 1.6;
+    width: 100%;
+  }
+
+  .tip-content.open {
+    display: block;
+  }
+
+  .tip-content ul {
+    margin: 4px 0 0;
+    padding-left: 16px;
+  }
+
+  .tip-content li {
+    margin-bottom: 4px;
+  }
+
+  /* 약도 다이어그램 모바일 100% 비율 보존 프레임 */
+  .diagram-card {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-top: 12px;
+    box-shadow: var(--shadow-sm);
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .diagram-card .diagram-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .diagram-card .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .diagram-card .badge.blue {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+
+  .diagram-card .badge.red {
+    background: var(--red-soft);
+    color: var(--red);
+  }
+
+  .diagram-graphic {
+    background: #f8f9fa;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    border: 1px dashed #cfd8dc;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* 식사 칩 */
+  .meal-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 16px 0 0;
+    width: 100%;
+  }
+
+  .meal-chip {
+    font-size: 12.5px;
+    background: var(--bg);
+    border-radius: 9999px;
+    padding: 6px 14px;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+
+  .meal-chip b {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .optional-card {
+    background: #fff9db;
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.55;
+    width: 100%;
+  }
+
+  .optional-card .opt-label {
+    color: #b7791f;
+    font-weight: 800;
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  footer {
+    max-width: 640px;
+    width: 100%;
+    margin: 40px auto 0;
+    padding: 20px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .quickcall-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .quickcall-list a {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--card);
+    border-radius: var(--radius-md);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    gap: 4px;
+    width: 100%;
+  }
+
+  .quickcall-list a span.num {
+    color: var(--primary);
+    font-size: 13.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-day" id="stickyDay"></div>
+
+<div class="wrap">
+
+  <div class="eyebrow">하나투어 패키지 여행</div>
+  <h1>서안·화산, 실크로드의 시작점</h1>
+  <div class="sub">4박 5일 · 2026.11.09(월) ~ 11.13(금)</div>
+
+  <!-- 토스 스타일 항공권 카드 -->
+  <div class="flight-card">
+    <div class="flight-row">
+      <div>
+        <div class="lbl">출발</div>
+        <div class="val">서울 ICN</div>
+        <div class="date">11.09(월) 09:15</div>
+      </div>
+      <div class="flight-mid">직항<br>3시간 30분</div>
+      <div>
+        <div class="lbl">도착</div>
+        <div class="val">서안 XIY</div>
+        <div class="date">11.09(월) 11:45</div>
+      </div>
+    </div>
+    <div class="flight-air">대한항공 KE0137</div>
+
+    <div class="flight-row" style="margin-top:14px;">
+      <div>
+        <div class="lbl">출발</div>
+        <div class="val">서안 XIY</div>
+        <div class="date">11.13(금) 12:55</div>
+      </div>
+      <div class="flight-mid">직항<br>2시간 50분</div>
+      <div>
+        <div class="lbl">도착</div>
+        <div class="val">서울 ICN</div>
+        <div class="date">11.13(금) 16:45</div>
+      </div>
+    </div>
+    <div class="flight-air">대한항공 KE0138</div>
+
+    <div class="price-tag">1인 요금 <b>1,499,000원</b> · 유류할증료 및 제세공과금 포함</div>
+  </div>
+
+  <!-- 일정 빠른 가기 -->
+  <nav class="daynav" id="daynav">
+    <button onclick="toggleDay('d1')">1일차 11/9 (월)</button>
+    <button onclick="toggleDay('d2')">2일차 11/10 (화)</button>
+    <button onclick="toggleDay('d3')">3일차 11/11 (수)</button>
+    <button onclick="toggleDay('d4')">4일차 11/12 (목)</button>
+    <button onclick="toggleDay('d5')">5일차 11/13 (금)</button>
+  </nav>
+
+  <h2 class="section-title">알아두면 좋은 것</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="label">환율</div>
+      <div class="body">1위안 ≈ 195원 (모바일 결제 권장)</div>
+    </div>
+    <div class="info-card">
+      <div class="label">시차</div>
+      <div class="body">한국보다 1시간 느려요.</div>
+    </div>
+    <div class="info-card">
+      <div class="label">전압·플러그</div>
+      <div class="body">220V, 멀티어댑터가 유용해요.</div>
+    </div>
+    <div class="info-card">
+      <div class="label">수돗물</div>
+      <div class="body">마시지 말고 생수 사용하세요.</div>
+    </div>
+    <div class="info-card">
+      <div class="label">결제</div>
+      <div class="body">알리페이(Alipay)·위챗페이 필수!</div>
+    </div>
+    <div class="info-card">
+      <div class="label">인터넷</div>
+      <div class="body">VPN 포괄 eSIM 또는 로밍 필수.</div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:6px;">
+    <b>비상 연락처</b>
+    현지 경찰 110 · 구급 120 · 화재 119<br>
+    주시안 대한민국 총영사관 <a href="tel:+862988351001">+86-29-8835-1001</a> · <a href="tel:+8618710910838">+86-187-1091-0838</a><br>
+    외교부 영사콜센터(24시간) <a href="tel:+8223210404">+82-2-3210-0404</a>
+  </div>
+  
+  <div class="note">
+    <b>지도 안내</b> 중국 현지에서는 구글맵 접속이 제한되므로 <b>고덕지도(高德地图, Amap)</b>가 정확합니다. 각 일정의 <b>[📍 고덕지도 보기]</b> 버튼을 누르면 중국어 현지명 지도가 즉시 연결됩니다.
+  </div>
+
+  <!-- 확정 숙소 안내 섹션 -->
+  <h2 class="section-title">머무는 곳 (확정)</h2>
+  <div class="hotel-confirmed-card">
+    <div class="hotel-header">
+      <div>
+        <div class="hotel-name-ko">진후이 풀만 호텔 시안</div>
+        <div class="hotel-name-cn">西安金辉普尔曼酒店 (Pullman Xi'an Weiyang / Chanba)</div>
+      </div>
+      <span class="hotel-badge">5성급 확정</span>
+    </div>
+    
+    <div class="hotel-info-list">
+      📍 <b>정확한 위치:</b> 시안 <b>북부</b> 미앙구(未央区) / 찬바 생태구역 (北辰东路 188号)<br>
+      🏨 <b>숙박 일자:</b> 1일차~4일차 전 일정 (총 4박 연속 투숙)<br>
+      ✨ <b>특징:</b> 아코르(Accor) 그룹의 최신 5성급 럭셔리 호텔로 시안 북부에 위치하여 대명궁 국가유적공원, 대화 1935 문화단지 및 공항 접근성이 뛰어납니다.
+    </div>
+
+    <div class="hotel-location-warning">
+      ⚠️ <b>야간 이동 동선 필수 주의:</b><br>
+      남쪽 곡강신구(대당불야성, 대안탑, 조이시티, 대당부용원 등)와는 <b>도보 이동이 불가능</b>하며, 디디/택시로 약 <b>30~35분(약 18km)</b> 소요됩니다. 야간 개인 외출 시 택시 동선을 사전에 확인하세요.
+    </div>
+
+    <div class="hotel-address-box">
+      <b>📍 호텔 세부 주소 정보</b><br>
+      • <b>중국어 주소:</b> 陕西省 西安市 未央区 北辰东路 188号 (西安金辉普尔曼酒店)<br>
+      • <b>영문 주소:</b> No. 188 Beichen East Road, Weiyang District, Xi'an, Shaanxi, China<br>
+      • <b>택시 기사 제시용:</b> 请带 me 去 未央区 北辰东路188号 西安金辉普尔曼酒店
+    </div>
+
+    <a class="maplink" href="https://www.amap.com/search?query=西安金辉普尔曼酒店" target="_blank" style="margin-top:14px; width:100%; justify-content:center;">📍 고덕지도(高德地图) 호텔 위치 보기</a>
+  </div>
+
+  <!-- 시안 북부 호텔 주변 핫플 및 방 안 배달(外卖) 꿀팁 카드 -->
+  <div class="mz-night-card">
+    <div class="mz-night-title">
+      <span>🎨 호텔 근처(시안 북부) 추천 핫플 & 배달 꿀팁</span>
+    </div>
+    
+    <div class="mz-spot-item">
+      <div class="mz-spot-name">
+        <span>🏭 대화 1935 (大华1935)</span>
+        <span class="mz-spot-tag">차량 10~15분</span>
+      </div>
+      <div class="mz-spot-desc">
+        1935년에 조성된 옛 방직공장을 개조한 시안 북부 최고 인기 <b>레트로·경조(国潮) 문화예술 단지</b>입니다. 감성 빈티지 카페, 바이닐 LP 숍, 독립 공방, 공연장이 밀집해 있어 패키지 저녁 일정 후 힙하게 둘러보기 좋습니다.
+      </div>
+    </div>
+
+    <div class="mz-spot-item">
+      <div class="mz-spot-name">
+        <span>🏛️ 대명궁 국가유적공원 (大明宫国家遗址公园)</span>
+        <span class="mz-spot-tag">차량 10~15분</span>
+      </div>
+      <div class="mz-spot-desc">
+        당나라 때 자금성의 4배 크기에 달했던 황궁 터입니다. 밤이 되면 웅장한 <b>단봉문(丹凤门)</b> 정문 건축물에 화려한 조명이 켜지며, 넓은 광장에서 야경을 감상하며 밤 산책을 즐기기 훌륭합니다.
+      </div>
+    </div>
+
+    <div class="mz-spot-item" style="background: var(--primary-soft); border: 1px solid rgba(49, 130, 246, 0.2);">
+      <div class="mz-spot-name" style="color: var(--primary-dark);">
+        <span>🛵 방 안에서 즐기는 알리페이 배달(外卖) 팁</span>
+        <span class="mz-spot-tag" style="background: var(--primary); color: #fff;">추천 야식</span>
+      </div>
+      <div class="mz-spot-desc" style="color: var(--ink-dim);">
+        알리페이 앱 내 메이투안(美团) 미니프로그램으로 <b>바왕차지(霸王茶姬)</b> '백아절현(伯牙绝弦)' 밀크티나 <b>로우자모(肉夹馍)</b>, <b>양꼬치(羊肉串)</b>, 현지 오렌지 탄산음료 <b>빙풍(冰峰)</b>을 주문해 보세요. 5성급 호텔 로비 수거 서비스로 편리하게 야식을 즐길 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== 1일차 ===================== -->
+  <div class="day open" id="d1">
+    <div class="day-head" onclick="toggleDay('d1')">
+      <div class="day-num">1일차 · <span class="day-date">11/9(월)</span></div>
+      <div class="day-title">인천 출국 → 서안 도착</div>
+      <div class="day-mood">동서양 상인이 만난 실크로드의 서막과 서안의 야경</div>
+      <div class="day-route">미팅포인트 · 면세인도장 · 실크로드시작점 · 서안성벽 · 회족거리 · 종·고루</div>
+      <span class="chevron">∨</span>
+    </div>
+    <div class="day-body">
+
+    <div class="timeline">
+      <!-- 06:15 하나투어 미팅 -->
+      <div class="item highlight-airport">
+        <div class="time">06:15</div>
+        <div class="title">하나투어 미팅포인트 합류</div>
+        <div class="desc">인천공항 제2여객터미널 3층 1번 출입문(A카운터 옆) 여행사카운터 내 하나투어 테이블에서 샌딩 가이드와 미팅하고 입국 관련 서류를 확인합니다.</div>
+        
+        <!-- 미팅장소 약도 다이어그램 카드 -->
+        <div class="diagram-card">
+          <div class="diagram-title">
+            <span>📍 인천공항 T2 하나투어 미팅장소 약도</span>
+            <span class="badge blue">A카운터 옆</span>
+          </div>
+          <div class="diagram-graphic">
+            <div style="font-size:13.5px; font-weight:800; color:#191f28; margin-bottom:4px;">인천공항 제2여객터미널 3층 1번 출입문(A카운터옆) 여행사카운터 内 하나투어 테이블</div>
+            <div style="font-size:12px; color:#f04452; font-weight:700; margin-top:6px;">※ 터미널 및 미팅 위치를 반드시 확인하세요!</div>
+            <div style="font-size:12px; color:#4e5968; margin-top:4px; line-height:1.45;">
+              • [항공 좌석배정] 기내 좌석 배정은 항공사의 고유 권한으로 일행과 좌석이 분리될 수 있습니다.<br>
+              • 안전한 출국을 위해 하나투어 미팅시간까지는 반드시 공항에 도착해 주시기 바랍니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 07:00 면세품 인도장 -->
+      <div class="item highlight-dutyfree">
+        <div class="time">07:00</div>
+        <div class="title">신세계면세점 모바일 인도장 수령</div>
+        <div class="desc">보안검색 및 출국심사 후 면세구역으로 이동하여 미리 주문한 면세품을 수령합니다.</div>
+        
+        <!-- 인도장 약도 다이어그램 카드 -->
+        <div class="diagram-card">
+          <div class="diagram-title">
+            <span>🛍️ 인천국제공항 T2 통합 면세품 인도장 안내</span>
+            <span class="badge red">252번 게이트 맞은편 4층</span>
+          </div>
+          <div class="diagram-graphic">
+            <div style="font-size:13.5px; font-weight:800; color:#191f28; margin-bottom:4px;">T2 면세품 통합 인도장</div>
+            <div style="font-size:12.5px; color:#4e5968; line-height:1.5;">
+              <b>위치:</b> 1번 출국장 수속 후 <b>252번 게이트 맞은편</b> 에스컬레이터를 타고 <b>4층(구름다리 건너편)</b> 이동<br>
+              (신세계, 롯데, 신라, 현대 통합 인도장 카운터 위치)<br>
+              <b>동선 팁:</b> 인도장에서 면세품 수령 후 3층으로 내려오면 신세계 오프라인 매장 및 <b>248번 탑승 게이트</b>와 바로 연결됩니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 08:00 신세계 오프라인 & 네이버 혜택 -->
+      <div class="item highlight-dutyfree">
+        <div class="time">08:00</div>
+        <div class="title">신세계면세점 248번 매장 쇼핑 & 네이버 5,000P 수령</div>
+        <div class="desc">인도장에서 3층으로 내려와 T2 <b>신세계면세점 248번 매장 구역</b>을 방문합니다. 네이버플러스 멤버십 제휴 5,000 N포인트 증정 쿠폰 혜택을 등록·적용하고 면세 쇼핑을 즐깁니다.</div>
+      </div>
+
+      <!-- 08:40 탑승게이트 이동 -->
+      <div class="item">
+        <div class="time">08:40</div>
+        <div class="title">대한항공 탑승게이트 이동 및 탑승 준비</div>
+        <div class="desc">쇼핑 완료 후 KE0137편 해당 탑승 게이트로 이동하여 탑승을 준비합니다. (출발 20분 전 탑승 시작)</div>
+      </div>
+
+      <!-- 09:15 인천 출발 -->
+      <div class="item">
+        <div class="title">서울(ICN) 출발 ✈️</div>
+        <div class="desc">비행시간 약 3시간 30분 소요 (기내식 제공)</div>
+        <div class="flight-info">대한항공 KE0137</div>
+      </div>
+
+      <!-- 11:45 서안 도착 -->
+      <div class="item">
+        <div class="time">11:45</div>
+        <div class="title">서안 咸阳 국제공항(XIY) 도착</div>
+        <div class="desc">입국 심사를 마치고 짐을 찾은 후, 피켓을 든 하나투어 현지 전용 가이드와 미팅합니다.</div>
+        <a class="maplink" href="https://www.amap.com/search?query=西安咸阳国际机场" target="_blank">📍 고덕지도(高德地图) 보기</a>
+      </div>
+
+      <!-- 실크로드 시작점 -->
+      <div class="item">
+        <div class="title">실크로드 시작점 군조 (丝绸之路起点群雕)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 1987년 당나라 건성 1250주년을 기념해 조성된 길이 29m의 웅장한 화강암 석조 군조입니다. B.C. 139년 한나라 무제의 명을 받은 <b>장건(張騫)</b>이 서역으로 떠나며 비단길(Silk Road)을 개척했던 유구한 역사를 상징합니다. 실물 크기의 낙타 14마리와 동서양 상인, 서역의 무용수들이 사막의 모래바람을 헤치고 나아가는 모습이 역동적으로 조각되어 있습니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=丝绸之路起点群雕" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 관람 포인트 & 팁<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          • 낙타 행렬의 맨 앞에 서서 서역을 바라보는 인물이 바로 장건입니다.<br>
+          • 단체 및 개인 기념사진을 남기기에 가장 상징적인 스팟입니다.
+        </div>
+      </div>
+
+      <!-- 서안성벽 -->
+      <div class="item">
+        <div class="title">서안성벽 (西安城墙 - 영녕문)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 1370년 명나라 태조 홍무제(주원장) 때 당나라 황성의 옛터 위에 당대 최대 규모로 축조된 세계에서 가장 보존 상태가 완벽한 고성벽입니다. 총 둘레 13.7km, 높이 12m, 성벽 상부 폭만 12~14m에 달해 군사적 방어 기지 역할을 완벽히 수행했습니다. 동서남북 4대 문 중 남문인 <b>'영녕문(永宁门)'</b>은 황제를 맞이하던 문으로 오늘날 서안에서 가장 화려한 조명 야경을 자랑합니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=西安城墙" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 포토스팟 & 관람 팁<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          • 영녕문 옹성 내부에서 종루(钟楼) 방향을 배경으로 찍는 밤 풍경이 최고의 인생샷 스팟입니다.<br>
+          • 성벽 위는 바람이 매우 강하므로 스카프나 방풍 겉옷을 챙겨 오세요.
+        </div>
+      </div>
+
+      <!-- 회족거리, 종루, 고루 -->
+      <div class="item">
+        <div class="title">회족거리 · 종루 · 고루 (回民街·钟楼·鼓楼)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 당·송 대부터 실크로드를 따라 정착한 이슬람계 <b>후이족(回族)</b> 주민들의 터전인 회족거리명소입니다. 1384년 명나라 때 건립된 <b>종루(钟楼)</b>와 <b>고루(鼓楼)</b>는 각각 새벽에 종을 치고 저녁에 북을 쳐서 성문을 열고 닫던 시내 중심의 상징적 목조 누각입니다. 밤이 되면 황금빛 전통 조명이 더해져 신비로운 분위기를 연출합니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=回民街" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 회족거리 3대 미식 스토리<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          <ul>
+            <li><b>양고기 파오모(羊肉泡馍):</b> 딱딱한 빵(모)을 직접 손으로 잘게 찢어 넣고 푹 끓여 먹는 회족 대표 보양식.</li>
+            <li><b>비앙비앙면(𥟝𥟝面):</b> 한자 중 가장 복잡한 글자로 유명하며, 벨트처럼 두껍고 쫄깃한 면발에 고추기름을 얹어 비벼 먹는 면 요리.</li>
+            <li><b>로우자모(肉夹馍):</b> 바삭한 빵 사이에 잘게 다진 고기를 넣은 '중국식 수제 버거'.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 석식 -->
+      <div class="item">
+        <div class="title">석식 특식 — 덕발장 교자연 (德发长 饺子宴)</div>
+        <div class="desc">1936년 시작된 서안의 명물 만두 전문점으로, 180여 가지 모양과 정갈한 속재료로 빚어낸 궁중 교자 코스 요리를 즐깁니다.</div>
+      </div>
+
+      <!-- 호텔 투숙 -->
+      <div class="item">
+        <div class="title">호텔 체크인 및 휴식</div>
+        <div class="desc">확정된 5성급 <b>진후이 풀만 호텔 시안(西安金辉普尔曼酒店)</b>에 체크인하여 짐을 풀고 첫 날 일정을 마무리합니다.</div>
+      </div>
+    </div>
+
+    <div class="meal-row">
+      <div class="meal-chip">조식 <b>기내식</b></div>
+      <div class="meal-chip">중식 <b>현지식</b></div>
+      <div class="meal-chip">석식 특식 <b>덕발장 교자연</b></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ===================== 2일차 ===================== -->
+  <div class="day" id="d2">
+    <div class="day-head" onclick="toggleDay('d2')">
+      <div class="day-num">2일차 · <span class="day-date">11/10(화)</span></div>
+      <div class="day-title">황제의 유산, 병마용과 화청지</div>
+      <div class="day-mood">불멸을 꿈꾼 진시황의 군단과 당 현종·양귀비의 로맨스</div>
+      <div class="day-route">화청지 · 진시황 병마용갱 · 진시황릉 · 실크로드쇼</div>
+      <span class="chevron">∨</span>
+    </div>
+    <div class="day-body">
+
+    <div class="timeline">
+      <!-- 화청지 -->
+      <div class="item">
+        <div class="title">화청지 (华清宫 - 해당탕 & 오간청)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 3,000년 전 주나라 때부터 천연 온천수로 유명했던 왕실 별장입니다. 당 현종이 사랑했던 <b>양귀비</b>를 위해 전용 욕조인 <b>'해당탕(海棠汤)'</b>을 지어주었으며, 백거이의 저서 《장한가(长恨歌)》의 주 무대입니다. 한편, 1936년 장제스(蔣介石)가 장쉐량에게 감금되어 동북군의 내전 중단을 요구받았던 현대사의 변곡점 <b>'서안사변(西安事变)'</b> 당시 오간청(五间厅) 벽면에 남아있는 총탄 자국도 생생히 관람할 수 있습니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=华清宫" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 관람 팁<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          온천 유적이 남아있는 내부는 바닥이 미끄러우므로 편안한 운동화를 착용하세요.
+        </div>
+      </div>
+
+      <!-- 병마용갱 -->
+      <div class="item">
+        <div class="title">진시황 병마용갱 (秦始皇兵马俑博物馆)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 1974년 우물을 파던 농부 <b>양즈파(楊志發)</b>가 흙인형 조각을 우연히 발굴하며 세상을 놀라게 한 유네스코 세계문화유산입니다. 진시황이 사후 세계에서도 자신의 제국을 지키기 위해 실물 크기로 조성한 지하 군단으로, 현재까지 발견된 8,000여 점의 토용 중 얼굴 표정, 머리모양, 갑옷 끈 무늬가 동일한 것이 단 하나도 없습니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=秦始皇兵马俑博物馆" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 갱도별 가이드 & 채색의 비밀<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          <ul>
+            <li><b>1호갱:</b> 6,000여 명의 보병 주력 군단이 동쪽을 향해 당당히 진형을 갖춘 최대 규모 갱도.</li>
+            <li><b>2호갱:</b> 기병, 궁병, 전차병으로 구성된 혼성 엘리트 부대 (현재 진행형 발굴 현장).</li>
+            <li><b>3호갱:</b> 무장 상태와 배치가 다른 최상위 군사 지휘부(사령부).</li>
+            <li><b>채색 부식의 비화:</b> 원래 정교한 채색이 되어 있었으나, 발굴 당시 칠기와 안료가 서안의 건조한 공기에 노출되면서 불과 15초~몇 분 만에 박리되어 현재의 흙빛으로 변했습니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 진시황릉 -->
+      <div class="item">
+        <div class="title">진시황릉 (秦始皇陵)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> B.C. 246년 진시황이 13세로 즉위한 순간부터 38년간 70만 명을 동원해 만든 거대한 지하 피라미드 능묘입니다. 사마천의 《사기(史記)》에 따르면 지하궁전 내부에 수은으로 만든 100여 개의 강과 바다가 흐르고 자동 화살 함정이 설치되어 있다고 전해집니다. 실제로 능묘 봉분 토양 조사 결과 일반 지대보다 수은 농도가 수십 배 이상 높게 검출되어 사기의 기록이 사실임이 입증되었습니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=秦始皇陵" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <div class="optional-card">
+          <div class="opt-label">선택관광 · 진시황 지하궁전 체험관</div>
+          유물 보존 기술이 완전해질 때까지 정식 발굴을 보류 중인 진시황릉 지하 세계를 최첨단 미디어 아트로 완벽 재현한 관람관입니다. (성인/아동 $30)
+        </div>
+      </div>
+
+      <!-- 실크로드쇼 -->
+      <div class="item">
+        <div class="title">실크로드쇼 (낙타 연극)</div>
+        <div class="desc">실제 낙타 떼와 수십 명의 무용수, 웅장한 특수효과로 실크로드 무역로의 고난과 영광을 표현한 화려한 대형 공연입니다.</div>
+      </div>
+
+      <!-- 호텔 휴식 -->
+      <div class="item">
+        <div class="title">진후이 풀만 호텔 복귀 및 휴식</div>
+        <div class="desc">전용 차편으로 숙소로 이동하여 푹 쉬어줍니다.</div>
+      </div>
+    </div>
+
+    <div class="meal-row">
+      <div class="meal-chip">조식 <b>호텔식</b></div>
+      <div class="meal-chip">중식 <b>한식</b></div>
+      <div class="meal-chip">석식 특식 <b>사천 요리</b></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ===================== 3일차 ===================== -->
+  <div class="day" id="d3">
+    <div class="day-head" onclick="toggleDay('d3')">
+      <div class="day-num">3일차 · <span class="day-date">11/11(수)</span></div>
+      <div class="day-title">중국 오악 중 가장 험준한 서악, 화산(华山) 트레킹</div>
+      <div class="day-mood">무협의 전설과 수직 절벽 위 구름을 거니는 날</div>
+      <div class="day-route">화산 서봉 케이블카 · 서봉~북봉 트레킹 · 전신 마사지</div>
+      <span class="chevron">∨</span>
+    </div>
+    <div class="day-body">
+
+    <div class="note">
+      <b>⛰️ 화산 트레킹 코스 동선 안내</b><br>
+      셔틀버스(40분) ➔ 서봉 케이블카 상행(25분) ➔ 서봉 연화봉 ➔ 남봉·동봉·중봉 능선(약 2시간 30분) ➔ 창룽링(창룡령) ➔ 북봉 운대봉 ➔ 북봉 케이블카 하행(15분)
+    </div>
+
+    <div class="timeline">
+      <div class="item">
+        <div class="title">화산으로 이동</div>
+        <div class="desc">서안 시내에서 화산 국립공원으로 버스로 이동합니다. (약 2시간 소요)</div>
+      </div>
+
+      <!-- 화산 서봉 -->
+      <div class="item">
+        <div class="title">화산 서봉 (华山西峰 - 연화봉 2,086.6m)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 중국 5대 명산(오악) 중 서악(西嶽)인 화산은 깎아지른 화강암 절벽으로 유명하며, 김용의 무협소설 《소오강호(笑傲江湖)》 속 <b>'화산파(华山派)'</b>의 영산입니다. 봉우리 모양이 만개한 연꽃을 닮아 연화봉이라 불립니다. 절벽 암반을 뚫고 설치된 케이블카를 타고 단숨에 올라 도교 성지의 기운과 광활한 산세에 몰입하게 됩니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=华山西峰" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 안전 및 복장 준비사항<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          • 11월 정상부는 강한 칼바람과 함께 시내보다 기온이 8~10도 이상 낮습니다.<br>
+          • 방풍 재킷, 장갑, 스카프를 꼭 지참하시고, 등산 스틱이나 미끄럼 방지가 완벽한 운동화를 착용하세요.
+        </div>
+      </div>
+
+      <!-- 서봉 -> 북봉 트레킹 -->
+      <div class="item">
+        <div class="title">서봉 ➔ 북봉 능선 트레킹 (창룽링 苍龙岭)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 서봉에서 북봉으로 하산하는 트레킹 구간 중 <b>'창룽링(苍龙岭, 푸른 용 능선)'</b>은 폭 1m 남짓한 좁은 돌 능선 좌우가 수백 미터 수직 절벽으로 이뤄진 명소스팟입니다. 당나라의 대문호 <b>한유(韓愈)</b>가 이 길의 험난함과 아찔함에 놀라 울면서 시를 써서 절벽 아래로 던졌다는 '한유투서(韩愈投书)' 전설이 전해져 내려옵니다.
+        </div>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 안전 산행 꿀팁<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          쇠사슬 난간이 촘촘히 구비되어 있습니다. 고소공포증이 있다면 아래를 보지 마시고 난간을 꼭 잡고 시선을 전방 3m 앞으로 유지하며 안전하게 발을 디디세요.
+        </div>
+      </div>
+
+      <!-- 화산 북봉 -->
+      <div class="item">
+        <div class="title">화산 북봉 (华山北峰 - 운대봉 1,614m)</div>
+        <div class="desc">
+          독수리가 날개를 펴고 앉은 형상의 봉우리로, 화산의 웅장한 전경을 한눈에 담은 후 북봉 하행 케이블카를 타고 하산합니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=华山北峰" target="_blank">📍 고덕지도(高德地图) 보기</a>
+      </div>
+
+      <div class="item">
+        <div class="title">서안 복귀 및 전신 마사지 (60분)</div>
+        <div class="desc">서안 시내로 돌아와 트레킹으로 피로해진 다리와 몸의 근육을 릴랙스해 주는 전문 전신 마사지를 체험합니다.</div>
+      </div>
+
+      <div class="item">
+        <div class="title">진후이 풀만 호텔 투숙 및 휴식</div>
+        <div class="desc">호텔로 이동하여 편안하게 정비합니다.</div>
+      </div>
+    </div>
+
+    <div class="meal-row">
+      <div class="meal-chip">조식 <b>호텔식</b></div>
+      <div class="meal-chip">중식 <b>한식 도시락 / 현지식</b></div>
+      <div class="meal-chip">석식 <b>현지식</b></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ===================== 4일차 ===================== -->
+  <div class="day" id="d4">
+    <div class="day-head" onclick="toggleDay('d4')">
+      <div class="day-num">4일차 · <span class="day-date">11/12(목)</span></div>
+      <div class="day-title">서안의 고요한 사찰과 화려한 당나라 밤거리</div>
+      <div class="day-mood">시인 이백의 시선부터 현대의 불야성까지</div>
+      <div class="day-route">흥경궁 · 소안탑·서안박물관 · 비림 · 와룡사 · 팔로군 변사소 · 대당불야성</div>
+      <span class="chevron">∨</span>
+    </div>
+    <div class="day-body">
+
+    <div class="timeline">
+      <!-- 흥경궁 공원 -->
+      <div class="item">
+        <div class="title">흥경궁 공원 (兴庆宫公园 - 침향정)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 당 현종과 양귀비가 상주하며 국정을 보고 정원을 거닐던 당나라 3대 궁전(대명궁, 태극궁, 흥경궁) 중 하나입니다. 공원 내 <b>'침향정(沉香亭)'</b>은 시선(詩仙) <b>이백(李白)</b>이 양귀비의 미모와 모란꽃의 아름다움을 찬양하는 유명한 명시 《청평조(清平調)》 3수를 즉석에서 지어 바친 고사가 깃든 장소입니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=兴庆宫公园" target="_blank">📍 고덕지도(高德地图) 보기</a>
+      </div>
+
+      <!-- 소안탑 & 서안박물관 -->
+      <div class="item">
+        <div class="title">소안탑 · 서안박물관 (小雁塔·西安博物院)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 707년 당나라 고종과 측천무후 때 세워진 13층 벽돌탑인 <b>소안탑(小雁塔)</b>은 명·청 대에 걸친 대지진 때 탑 중앙에 커다란 균열이 생겼다가 다음 지진 때 다시 기적처럼 메워졌다는 <b>'삼합삼열(三合三裂)'</b>의 전설로 유명합니다. 명 건축가 장진추(张锦秋) 선생이 설계한 당풍 건축의 <b>서안박물관</b>에서는 1:1,500 비율의 고대 당 장안성 정교한 모형과 정교한 당삼채 유물을 감상할 수 있습니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=小雁塔" target="_blank">📍 고덕지도(高德地图) 보기</a>
+      </div>
+
+      <!-- 비림, 와룡사, 팔로군 -->
+      <div class="item">
+        <div class="title">비림 · 와룡사 · 팔로군 변사소 (碑林·卧龙寺)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> <b>비림(碑林)</b>은 북송 대인 1087년에 건립되어 서예의 성성 왕희지, 안진경, 구양순 등의 명필 비석 4,000여 점을 보존하고 있는 한자 서예의 성지입니다. 인근의 <b>와룡사(卧龙寺)</b>는 섬서성에서 가장 오래된 고찰 중 하나이며, <b>팔로군 서안변사소 기념관</b>은 항일전쟁 시기 팔로군의 지하 연락 거점으로 근현대 역사의 현장을 보존하고 있습니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=西安碑林博物馆" target="_blank">📍 고덕지도(高德地图) 보기</a>
+      </div>
+
+      <!-- 대안탑 북광장 & 대당불야성 -->
+      <div class="item">
+        <div class="title">대안탑 북광장 · 대당불야성 (大唐不夜城)</div>
+        <div class="desc">
+          <b>인문학 이야기:</b> 삼장법사 <b>현장(玄奘)</b>이 인도에서 가져온 불경과 불상을 보관하기 위해 652년 건립한 대안탑 남북으로 펼쳐진 광장입니다. 북광장의 아시아 최대 규모 음악분수 쇼와 함께, 남쪽으로 2.1km 이어지는 <b>'대당불야성(大唐不夜城)'</b>은 당나라 황금기의 활기찬 밤거리를 현대적으로 재해석하여 거리 공연, 전통 의상(한푸) 체험, 화려한 조명으로 밤마다 장관을 이룹니다.
+        </div>
+        <a class="maplink" href="https://www.amap.com/search?query=大唐不夜城" target="_blank">📍 고덕지도(高德地图) 보기</a>
+        <button class="tip-toggle" onclick="toggleTip(this)">💡 즐길거리 스팟<span class="arrow">∨</span></button>
+        <div class="tip-content">
+          전통 복장을 차려입은 배우들과 인터랙티브 연극을 즐길 수 있습니다. 사람이 많이 몰리므로 소지품 및 가이드 일행과의 동선을 잘 확인해 주세요.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="title">진후이 풀만 호텔 투숙 및 휴식</div>
+        <div class="desc">서안에서의 마지막 밤을 정리하고 휴식을 취합니다.</div>
+      </div>
+    </div>
+
+    <div class="meal-row">
+      <div class="meal-chip">조식 <b>호텔식</b></div>
+      <div class="meal-chip">중식 특식 <b>현지식 샤브샤브</b></div>
+      <div class="meal-chip">석식 특식 <b>서안반점 섬서 요리</b></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ===================== 5일차 ===================== -->
+  <div class="day" id="d5">
+    <div class="day-head" onclick="toggleDay('d5')">
+      <div class="day-num">5일차 · <span class="day-date">11/13(금)</span></div>
+      <div class="day-title">서안 출발 → 인천 귀국</div>
+      <div class="day-mood">실크로드의 추억을 가득 품고 귀국하는 날</div>
+      <div class="day-route">서안 咸阳 공항 · 귀국</div>
+      <span class="chevron">∨</span>
+    </div>
+    <div class="day-body">
+
+    <div class="timeline">
+      <div class="item">
+        <div class="title">호텔 체크아웃 & 공항 이동</div>
+        <div class="desc">호텔에서 조식 후 체크아웃을 진행하고 서안 咸阳 국제공항으로 이동합니다.</div>
+        <a class="maplink" href="https://www.amap.com/search?query=西安咸阳国际机场" target="_blank">📍 고덕지도(高德地图) 보기</a>
+      </div>
+
+      <div class="item">
+        <div class="time">12:55</div>
+        <div class="title">서안(XIY) 출발 ✈️</div>
+        <div class="desc">비행시간 약 2시간 50분 소요 (기내식 제공)</div>
+        <div class="flight-info">대한항공 KE0138</div>
+      </div>
+
+      <div class="item">
+        <div class="time">16:45</div>
+        <div class="title">서울(ICN) 인천공항 도착</div>
+        <div class="desc">수하물 수령 및 입국 수속 후 4박 5일간의 서안·화산 여정을 마무리합니다. 고생 많으셨습니다!</div>
+      </div>
+    </div>
+
+    <div class="meal-row">
+      <div class="meal-chip">조식 <b>호텔식</b></div>
+      <div class="meal-chip">중식 <b>기내식</b></div>
+    </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 바로 걸기 비상 연락망 -->
+<div class="wrap quickcall">
+  <h2 class="section-title" style="margin-top:0;">비상시 바로 연결</h2>
+  <div class="quickcall-list">
+    <a href="tel:+862988351001">주시안 대한민국 총영사관 (대표) <span class="num">+86-29-8835-1001</span></a>
+    <a href="tel:+8618710910838">주시안 총영사관 (긴급 당직) <span class="num">+86-187-1091-0838</span></a>
+    <a href="tel:+8223210404">외교부 영사콜센터 (24시간) <span class="num">+82-2-3210-0404</span></a>
+  </div>
+</div>
+
+<footer>
+  본 가이드는 나만의 서안·화산 여행 일정을 정리한 웹 플래너입니다.<br>
+  스마트폰 모바일 브라우저의 '홈 화면에 추가'를 해두시면 언제든 편리하게 열람할 수 있습니다.
+</footer>
+
+<script>
+  // 아코디언 토글
+  const toggleDay = (id) => {
+    const day = document.getElementById(id);
+    const willOpen = !day.classList.contains('open');
+    day.classList.toggle('open');
+    if (willOpen) {
+      day.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    updateStickyDay();
+  };
+
+  // 팁 내용 토글
+  const toggleTip = (btn) => {
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.classList.toggle('open');
+  };
+
+  // 시간이 없는 일정에 자동 태그 부여
+  document.querySelectorAll('.item').forEach(item => {
+    if (!item.querySelector('.time') && !item.querySelector('.time-free')) {
+      const tagEl = document.createElement('div');
+      tagEl.className = 'time-free';
+      tagEl.textContent = '시간 미정 · 현지 상황에 따라 진행';
+      item.insertBefore(tagEl, item.firstChild);
+    }
+  });
+
+  // 스크롤 시 상단 글래스모피즘 DAY 표시바 업데이트
+  const stickyBar = document.getElementById('stickyDay');
+  const dayEls = Array.from(document.querySelectorAll('.day'));
+
+  const updateStickyDay = () => {
+    let current = null;
+    dayEls.forEach(d => {
+      const rect = d.getBoundingClientRect();
+      if (rect.top <= 60) {
+        current = d;
+      }
+    });
+    if (current) {
+      const num = current.id.replace('d', '');
+      const title = current.querySelector('.day-title').textContent.trim();
+      stickyBar.textContent = `DAY ${num} · ${title}`;
+      stickyBar.style.display = 'block';
+    } else {
+      stickyBar.style.display = 'none';
+    }
+  };
+
+  window.addEventListener('scroll', updateStickyDay, { passive: true });
+  updateStickyDay();
+</script>
+
+</body>
+</html>
